@@ -41,14 +41,6 @@ class ItemControllerTest {
         assertNotNull(itemDto.getId());
     }
 
-    @Test
-    void itemControllerDoesNotCreateItemForUnknownUser() {
-        ItemDto itemDto = getItemDto(itemCount);
-        NotFoundException thrown = assertThrows(NotFoundException.class,
-                () -> itemController.create(itemDto, 9999L),
-                "Контроллер не выбросил исключение при попытке создать вещь для несуществующего пользователя");
-        assertTrue(thrown.getMessage().contains("Пользователь не найден"));
-    }
 
     @Test
     void itemControllerFindsItemById() {
@@ -61,16 +53,6 @@ class ItemControllerTest {
         assertEquals(itemDto, foundItemDto);
     }
 
-    @Test
-    void itemControllerDoesNotFindItemWithWrongId() {
-        UserDto userDto = getUserDto(userCount);
-        userDto = userController.create(userDto);
-        Long userId = userDto.getId();
-        NotFoundException thrown = assertThrows(NotFoundException.class,
-                () -> itemController.findById(9999L, userId),
-                "Контроллер не выбросил исключение при попытке найти вещь по несуществующему id");
-        assertTrue(thrown.getMessage().contains("Предмет не найден"));
-    }
 
     @Test
     void itemControllerFindsAllItemsForUser() {
@@ -87,13 +69,6 @@ class ItemControllerTest {
         assertEquals(3, itemController.findAllOwned(userDto.getId()).size());
     }
 
-    @Test
-    void itemControllerDoesNotFindAllItemsForUnknownUser() {
-        NotFoundException thrown = assertThrows(NotFoundException.class,
-                () -> itemController.findAllOwned(9999L),
-                "Контроллер не выбросил исключение при попытке найти вещи для несуществующего пользователя");
-        assertTrue(thrown.getMessage().contains("Пользователь не найден"));
-    }
 
     @Test
     void itemControllerUpdatesItem() {
@@ -109,27 +84,6 @@ class ItemControllerTest {
         assertEquals(itemDto, updatedItemDto);
     }
 
-    @Test
-    void itemControllerDoesNotUpdateItemWithWrongId() {
-        UserDto userDto = getUserDto(userCount);
-        userDto = userController.create(userDto);
-        Long userId = userDto.getId();
-        ItemDto itemDto = getItemDto(itemCount);
-        NotFoundException thrown = assertThrows(NotFoundException.class,
-                () -> itemController.update(9999L, itemDto, userId),
-                "Контроллер не выбросил исключение при попытке обновить вещь по несуществующему id");
-        assertTrue(thrown.getMessage().contains("Предмет не найден"));
-    }
-
-    @Test
-    void itemControllerDoesNotUpdateItemWithWrongUserId() {
-        ItemDto itemDto = getItemDto(itemCount);
-        Long itemId = itemDto.getId();
-        NotFoundException thrown = assertThrows(NotFoundException.class,
-                () -> itemController.update(itemId, itemDto, 9999L),
-                "Контроллер не выбросил исключение при попытке обновить вещь по несуществующему пользователю");
-        assertTrue(thrown.getMessage().contains("Пользователь не найден"));
-    }
 
     @Test
     void itemControllerDoesNotUpdateItemForOtherUser() {

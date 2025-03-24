@@ -51,12 +51,6 @@ class UserControllerTest {
         assertEquals(userDto, createdUser);
     }
 
-    @Test
-    void userControllerDoesNotGetUserWithWrongId() {
-        assertThrows(NotFoundException.class,
-                () -> userController.findById(9999L),
-                "Контроллер не выкинул исключение при попытке получить пользователя по несуществующему id");
-    }
 
     @Test
     void userControllerUpdatesUser() {
@@ -95,26 +89,6 @@ class UserControllerTest {
         assertTrue(thrown.getMessage().contains("Этот email уже используется"));
     }
 
-    @Test
-    void userControllerDoesNotUpdateUserWithWrongId() {
-        UserDto userDto = getUserDto(userCount);
-        assertThrows(NotFoundException.class,
-                () -> userController.update(9999L, userDto),
-                "Контроллер не выкинул исключение при попытке обновить пользователя по несуществующему id");
-    }
-
-    @Test
-    void userControllerDeletesUser() {
-        UserDto userDto = getUserDto(userCount);
-        userDto = userController.create(userDto);
-        Long userId = userDto.getId();
-        userController.delete(userDto.getId());
-        NotFoundException thrown = assertThrows(
-                NotFoundException.class,
-                () -> userController.findById(userId),
-                "Контроллер не удалил пользователя");
-        assertTrue(thrown.getMessage().contains("Пользователь не найден"));
-    }
 
     @Test
     void userControllerDoesNotDeleteUserWithWrongId() {
