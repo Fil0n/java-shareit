@@ -13,7 +13,6 @@ import java.util.Map;
 public class InMemoryUserStorage implements UserStorage {
     private final Map<Long, User> userStorage = new HashMap<>();
     private Long currentId = 0L;
-    private static final String NOT_FOUND_USER = "Пользователь не найден";
 
     @Override
     public Collection<User> getAll() {

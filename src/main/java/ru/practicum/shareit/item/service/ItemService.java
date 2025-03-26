@@ -57,8 +57,8 @@ public class ItemService {
         if (itemDto.getDescription() != null) {
             item.setDescription(itemDto.getDescription());
         }
-        if (itemDto.getAvailable() != null) {
-            item.setAvailable(itemDto.getAvailable());
+        if (itemDto.getIsAvailable() != null) {
+            item.setIsAvailable(itemDto.getIsAvailable());
         }
 
         return ItemMapper.toItemDto(itemStorage.update(item));
@@ -74,7 +74,7 @@ public class ItemService {
             return List.of();
         }
         return itemStorage.getAll().stream()
-                .filter(Item::getAvailable)
+                .filter(Item::getIsAvailable)
                 .filter(item -> item.getName().toLowerCase().contains(text.toLowerCase())
                         || item.getDescription().toLowerCase().contains(text.toLowerCase()))
                 .map(ItemMapper::toItemDto)
