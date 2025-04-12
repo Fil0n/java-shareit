@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import ru.practicum.shareit.extention.ConditionsNotMetException;
 import ru.practicum.shareit.extention.NotFoundException;
+import ru.practicum.shareit.extention.WrongUserExeption;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -49,6 +50,13 @@ public class ExceptionsHandler {
     @ExceptionHandler
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public ErrorResponse handleNotFoundException(final NotFoundException e) {
+        log.info(e.getMessage());
+        return new ErrorResponse(e.getMessage());
+    }
+
+    @ExceptionHandler
+    @ResponseStatus(HttpStatus.FORBIDDEN)
+    public ErrorResponse handleWrongUserExeption(final WrongUserExeption e) {
         log.info(e.getMessage());
         return new ErrorResponse(e.getMessage());
     }
