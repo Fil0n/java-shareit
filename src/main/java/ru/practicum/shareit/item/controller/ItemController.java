@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.GetMapping;
 import ru.practicum.shareit.comment.model.CommentDto;
-import ru.practicum.shareit.comment.service.CommentServise;
+import ru.practicum.shareit.comment.service.CommentService;
 import ru.practicum.shareit.item.service.ItemService;
 import ru.practicum.shareit.item.model.ItemDto;
 
@@ -25,7 +25,7 @@ import java.util.List;
 @RequestMapping("/items")
 public class ItemController {
     private final ItemService itemService;
-    private final CommentServise commentService;
+    private final CommentService commentService;
 
     @GetMapping
     public List<ItemDto> findAllOwned(@RequestHeader("X-Sharer-User-Id") Long userId) {

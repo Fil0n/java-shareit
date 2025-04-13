@@ -6,7 +6,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import ru.practicum.shareit.booking.repository.BookingRepository;
 import ru.practicum.shareit.comment.model.CommentDto;
-import ru.practicum.shareit.comment.service.CommentServise;
+import ru.practicum.shareit.comment.service.CommentService;
 import ru.practicum.shareit.extention.ConditionsNotMetException;
 import ru.practicum.shareit.extention.ExceptionMessages;
 import ru.practicum.shareit.extention.NotFoundException;
@@ -25,11 +25,11 @@ import java.util.List;
 public class ItemService {
     private final UserService userService;
     private final ItemRepository itemRepository;
-    private final CommentServise commentServise;
+    private final CommentService commentService;
     private final BookingRepository bookingRepository;
 
     public ItemDto read(Long id) {
-        return ItemMapper.toItemDto(getItem(id), commentServise.getItemComments(id));
+        return ItemMapper.toItemDto(getItem(id), commentService.getItemComments(id));
     }
 
     public Item getItem(Long id) {
@@ -107,6 +107,6 @@ public class ItemService {
                 .orElseThrow(() -> new ValidationException(ExceptionMessages.NOT_WAS_RENT));
 
 
-        return commentServise.create(item, commentDto, userService.exists(userId));
+        return commentService.create(item, commentDto, userService.exists(userId));
     }
 }
