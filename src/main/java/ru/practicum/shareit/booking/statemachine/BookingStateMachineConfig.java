@@ -5,7 +5,6 @@ import org.springframework.statemachine.config.EnableStateMachineFactory;
 import org.springframework.statemachine.config.EnumStateMachineConfigurerAdapter;
 import org.springframework.statemachine.config.builders.StateMachineStateConfigurer;
 import org.springframework.statemachine.config.builders.StateMachineTransitionConfigurer;
-import ru.practicum.shareit.booking.model.Booking;
 import ru.practicum.shareit.booking.model.BookingEvent;
 import ru.practicum.shareit.booking.model.BookingStatusType;
 
