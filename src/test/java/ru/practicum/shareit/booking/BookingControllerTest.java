@@ -14,7 +14,6 @@ import ru.practicum.shareit.item.controller.ItemController;
 import ru.practicum.shareit.item.model.ItemDto;
 import ru.practicum.shareit.user.controller.UserController;
 import ru.practicum.shareit.user.model.UserDto;
-import ru.practicum.shareit.user.model.UserMapper;
 import ru.practicum.shareit.user.service.UserService;
 
 import java.time.LocalDateTime;
