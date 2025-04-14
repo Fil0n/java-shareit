@@ -14,6 +14,7 @@ import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.item.model.ItemMapper;
 import ru.practicum.shareit.item.model.ItemDto;
 import ru.practicum.shareit.item.repository.ItemRepository;
+import ru.practicum.shareit.user.model.User;
 import ru.practicum.shareit.user.service.UserService;
 
 import java.time.LocalDateTime;
@@ -28,31 +29,27 @@ public class ItemService {
     private final CommentService commentService;
     private final BookingRepository bookingRepository;
 
-    public ItemDto read(Long id) {
+    public ItemDto getItemDto(Long id) {
         return ItemMapper.toItemDto(getItem(id), commentService.getItemComments(id));
     }
 
-    public Item getItem(Long id) {
-        return exists(id);
-    }
-
     public List<ItemDto> getUserItems(Long userId) {
-        userService.exists(userId);
+        userService.getUser(userId);
         return itemRepository.findAllByOwnerId(userId)
                 .stream()
                 .map(ItemMapper::toItemDto)
                 .toList();
     }
 
-    public ItemDto create(ItemDto itemDto, Long userId) {
-        userService.exists(userId);
-        return ItemMapper.toItemDto(itemRepository.saveAndFlush(ItemMapper.toItem(itemDto, userService.exists(userId))));
+    public ItemDto createItem(ItemDto itemDto, Long userId) {
+        userService.getUser(userId);
+        return ItemMapper.toItemDto(itemRepository.saveAndFlush(ItemMapper.toItem(itemDto, userService.getUser(userId))));
     }
 
-    public ItemDto update(Long id, ItemDto itemDto, Long userId) {
+    public ItemDto updateItem(Long id, ItemDto itemDto, Long userId) {
         userIsOwner(id, userId);
 
-        Item item = exists(id);
+        Item item = getItem(id);
         if (itemDto.getName() != null) {
             item.setName(itemDto.getName());
         }
@@ -66,12 +63,12 @@ public class ItemService {
         return ItemMapper.toItemDto(itemRepository.saveAndFlush(item));
     }
 
-    public void delete(Long itemId, Long userId) {
+    public void deleteItem(Long itemId, Long userId) {
         userIsOwner(itemId, userId);
         itemRepository.deleteById(itemId);
     }
 
-    public List<ItemDto> search(String text) {
+    public List<ItemDto> searchItems(String text) {
         if (text == null || text.isBlank()) {
             return List.of();
         }
@@ -80,7 +77,7 @@ public class ItemService {
                 .toList();
     }
 
-    public Item exists(Long id) {
+    public Item getItem(Long id) {
         if (id == null) {
             throw new ConditionsNotMetException(ExceptionMessages.NOT_FOUND_ITEM);
         }
@@ -94,19 +91,19 @@ public class ItemService {
             throw new ConditionsNotMetException(ExceptionMessages.NOT_FOUND_USER);
         }
 
-        if (!exists(id).getOwner().getId().equals(userId)) {
+        if (!getItem(id).getOwner().getId().equals(userId)) {
             throw new ConditionsNotMetException("Пользователь не владелец предмета");
         }
     }
 
-    public CommentDto createComment(Long itemId, CommentDto commentDto, Long userId) {
-        Item item = exists(itemId);
-        userService.exists(userId);
+    public CommentDto createItemComment(Long itemId, CommentDto commentDto, Long userId) {
+        Item item = getItem(itemId);
+        User user = userService.getUser(userId);
 
         bookingRepository.findByItemIdAndBookerIdAndEndBefore(itemId, userId, LocalDateTime.now())
                 .orElseThrow(() -> new ValidationException(ExceptionMessages.NOT_WAS_RENT));
 
 
-        return commentService.create(item, commentDto, userService.exists(userId));
+        return commentService.createComment(item, commentDto, user);
     }
 }

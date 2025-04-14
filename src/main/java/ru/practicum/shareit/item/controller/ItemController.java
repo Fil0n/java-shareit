@@ -35,33 +35,33 @@ public class ItemController {
     @GetMapping("/{id}")
     public ItemDto findById(@PathVariable Long id,
                             @RequestHeader("X-Sharer-User-Id") Long userId) {
-        return itemService.read(id);
+        return itemService.getItemDto(id);
     }
 
     @GetMapping("/search")
     public List<ItemDto> search(@RequestParam String text,
                                 @RequestHeader("X-Sharer-User-Id") Long userId) {
-        return itemService.search(text);
+        return itemService.searchItems(text);
     }
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public ItemDto create(@RequestBody @Valid ItemDto item,
                           @RequestHeader("X-Sharer-User-Id") Long userId) {
-        return itemService.create(item, userId);
+        return itemService.createItem(item, userId);
     }
 
     @PatchMapping("/{id}")
     public ItemDto update(@PathVariable Long id,
                           @RequestBody ItemDto item,
                           @RequestHeader("X-Sharer-User-Id") Long userId) {
-        return itemService.update(id, item, userId);
+        return itemService.updateItem(id, item, userId);
     }
 
     @PostMapping("/{itemId}/comment")
     public CommentDto createComment(@PathVariable Long itemId, @RequestBody @Valid CommentDto commentDto,
                                     @RequestHeader("X-Sharer-User-Id") Long userId) {
-        return itemService.createComment(itemId, commentDto, userId);
+        return itemService.createItemComment(itemId, commentDto, userId);
     }
 
     @GetMapping("/{itemId}/comment")

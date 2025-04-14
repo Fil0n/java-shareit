@@ -19,18 +19,18 @@ public class UserService {
     private final UserRepository userRepository;
     private final UserMapper userMapper;
 
-    public UserDto read(Long id) {
-        return userMapper.toUserDto(exists(id));
+    public UserDto getItemDto(Long id) {
+        return userMapper.toUserDto(getUser(id));
     }
 
-    public UserDto create(UserDto userDto) {
+    public UserDto createUser(UserDto userDto) {
         User user = userMapper.toUser(userDto);
-        validate(user);
+        validateUser(user);
         return userMapper.toUserDto(userRepository.saveAndFlush(user));
     }
 
-    public UserDto update(Long id, UserDto userDto) {
-        User user = exists(id);
+    public UserDto updateUser(Long id, UserDto userDto) {
+        User user = getUser(id);
         if (userDto.getName() != null) {
             user.setName(userDto.getName());
         }
@@ -38,16 +38,16 @@ public class UserService {
             user.setEmail(userDto.getEmail());
         }
 
-        validate(user);
+        validateUser(user);
         return userMapper.toUserDto(userRepository.saveAndFlush(user));
     }
 
-    public void delete(Long id) {
-        exists(id);
+    public void deleteUser(Long id) {
+        getUser(id);
         userRepository.deleteById(id);
     }
 
-    private void validate(User user) throws DuplicatedDataException {
+    private void validateUser(User user) throws DuplicatedDataException {
         if (userRepository.findAllByEmail(user.getEmail())
                 .stream()
                 .anyMatch(u ->
@@ -56,7 +56,7 @@ public class UserService {
         }
     }
 
-    public User exists(Long userId) throws ConditionsNotMetException {
+    public User getUser(Long userId) throws ConditionsNotMetException {
         if (userId == null) {
             throw new ConditionsNotMetException(ExceptionMessages.NOT_FOUND_ITEM);
         }

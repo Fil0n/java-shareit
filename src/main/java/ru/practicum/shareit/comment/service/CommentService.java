@@ -18,7 +18,7 @@ import java.util.List;
 public class CommentService {
     private final CommentRepository commentRepository;
 
-    public CommentDto create(Item item, CommentDto commentDto, User user) {
+    public CommentDto createComment(Item item, CommentDto commentDto, User user) {
         Comment comment = CommentMapper.toComment(commentDto, item, user);
         return CommentMapper.toCommentDto(commentRepository.saveAndFlush(comment));
     }

@@ -23,23 +23,23 @@ public class UserController {
 
     @GetMapping("/{id}")
     public UserDto findById(@PathVariable Long id) {
-        return userService.read(id);
+        return userService.getItemDto(id);
     }
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public UserDto create(@RequestBody @Valid UserDto user) {
-        return userService.create(user);
+        return userService.createUser(user);
     }
 
     @PatchMapping("/{id}")
     public UserDto update(@PathVariable Long id,
                           @RequestBody UserDto user) {
-        return userService.update(id, user);
+        return userService.updateUser(id, user);
     }
 
     @DeleteMapping("/{id}")
     public void delete(@PathVariable long id) {
-        userService.delete(id);
+        userService.deleteUser(id);
     }
 }

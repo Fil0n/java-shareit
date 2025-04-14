@@ -28,20 +28,20 @@ public class BookingController {
     public BookingDto create(@Valid @RequestBody
                              @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) BookingDto bookingDto,
                              @RequestHeader("X-Sharer-User-Id") Long userId) {
-        return bookingService.create(bookingDto, userId);
+        return bookingService.createBooking(bookingDto, userId);
     }
 
     @PatchMapping("/{bookingId}")
     public BookingDto updateStatus(@PathVariable Long bookingId,
                                    @RequestHeader("X-Sharer-User-Id") Long userId,
                                    @RequestParam Boolean approved) {
-        return bookingService.updateStatus(bookingId, userId, approved);
+        return bookingService.updateBookingStatus(bookingId, userId, approved);
     }
 
     @GetMapping("/{bookingId}")
     public BookingDto findById(@PathVariable Long bookingId,
                                @RequestHeader("X-Sharer-User-Id") Long userId) {
-        return bookingService.read(bookingId, userId);
+        return bookingService.getBookingDto(bookingId, userId);
     }
 
     @GetMapping

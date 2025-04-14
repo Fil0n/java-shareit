@@ -33,8 +33,8 @@ public class BookingService {
     private final ItemService itemService;
     private final StateMachineFactory<BookingStatusType, BookingEvent> stateMachineFactory;
 
-    public BookingDto read(Long bookingId, Long userId) {
-        Booking booking = exists(bookingId);
+    public BookingDto getBookingDto(Long bookingId, Long userId) {
+        Booking booking = getBooking(bookingId);
         if (!booking.getBooker().getId().equals(userId) && !booking.getItem().getOwner().getId().equals(userId)) {
             throw new ConditionsNotMetException(ExceptionMessages.BOOKING_GET_INFO_ERROR);
         }
@@ -61,7 +61,7 @@ public class BookingService {
     }
 
     public List<BookingDto> readByOwnerAndState(BookingState state, Long userId) {
-        userService.exists(userId);
+        userService.getUser(userId);
         List<Booking> bookings = switch (state) {
             case ALL -> bookingRepository.findAllByItemOwnerIdOrderByStartAsc(userId);
             case WAITING ->
@@ -81,19 +81,19 @@ public class BookingService {
                 .toList();
     }
 
-    public BookingDto create(BookingDto bookingDto, Long userId) {
-        User user = userService.exists(userId);
-        Item item = itemService.exists(bookingDto.getItemId());
+    public BookingDto createBooking(BookingDto bookingDto, Long userId) {
+        User user = userService.getUser(userId);
+        Item item = itemService.getItem(bookingDto.getItemId());
 
         Booking booking = BookingMapper.toBooking(bookingDto, item, user);
-        validate(booking);
+        validateBooking(booking);
         booking = bookingRepository.saveAndFlush(booking);
 
         return BookingMapper.toBookingDto(booking);
     }
 
-    public BookingDto updateStatus(Long bookingId, Long userId, Boolean approved) {
-        Booking booking = exists(bookingId);
+    public BookingDto updateBookingStatus(Long bookingId, Long userId, Boolean approved) {
+        Booking booking = getBooking(bookingId);
         if (!booking.getItem().getOwner().getId().equals(userId)) {
             throw new WrongUserExeption(ExceptionMessages.BOOKING_CHANGE_STATUS);
         }
@@ -105,7 +105,7 @@ public class BookingService {
 
     // Отмена брони пользователем
     public BookingDto cancelBooking(Long bookingId, Long userId) {
-        Booking booking = exists(bookingId);
+        Booking booking = getBooking(bookingId);
 
         if (!booking.getItem().getOwner().getId().equals(userId)) {
             throw new ConditionsNotMetException(ExceptionMessages.BOOKING_CHANGE_STATUS);
@@ -115,7 +115,7 @@ public class BookingService {
         return BookingMapper.toBookingDto(bookingRepository.save(booking));
     }
 
-    private void validate(Booking booking) {
+    private void validateBooking(Booking booking) {
         Optional<Booking> bookingOptional = bookingRepository.findByItemIdAndEndIsAfterAndStartIsBefore(booking.getItem().getId(), booking.getEnd(), booking.getStart());
 
         if (bookingOptional.isPresent()) {
@@ -137,7 +137,7 @@ public class BookingService {
         }
     }
 
-    private Booking exists(Long bookingId) throws ConditionsNotMetException {
+    private Booking getBooking(Long bookingId) {
         return Optional.ofNullable(bookingRepository.findById(bookingId))
                 .orElseThrow(() -> new NotFoundException(String.format(ExceptionMessages.BOOKING_NOT_FOUND_ERROR, bookingId))).get();
     }
