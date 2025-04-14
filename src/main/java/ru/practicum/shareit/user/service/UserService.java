@@ -9,29 +9,28 @@ import ru.practicum.shareit.extention.NotFoundException;
 import ru.practicum.shareit.user.model.User;
 import ru.practicum.shareit.user.model.UserDto;
 import ru.practicum.shareit.user.model.UserMapper;
-import ru.practicum.shareit.user.storage.UserStorage;
+import ru.practicum.shareit.user.repository.UserRepository;
 
 import java.util.Objects;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
 public class UserService {
-    private final UserStorage userStorage;
+    private final UserRepository userRepository;
     private final UserMapper userMapper;
 
-    public UserDto read(Long id) {
-        return userMapper.toUserDto(userStorage.read(id));
+    public UserDto getItemDto(Long id) {
+        return userMapper.toUserDto(getUser(id));
     }
 
-    public UserDto create(UserDto userDto) {
+    public UserDto createUser(UserDto userDto) {
         User user = userMapper.toUser(userDto);
-        validate(user);
-        return userMapper.toUserDto(userStorage.create(user));
+        validateUser(user);
+        return userMapper.toUserDto(userRepository.saveAndFlush(user));
     }
 
-    public UserDto update(Long id, UserDto userDto) {
-        User user = userStorage.read(id);
+    public UserDto updateUser(Long id, UserDto userDto) {
+        User user = getUser(id);
         if (userDto.getName() != null) {
             user.setName(userDto.getName());
         }
@@ -39,26 +38,30 @@ public class UserService {
             user.setEmail(userDto.getEmail());
         }
 
-        validate(user);
-        return userMapper.toUserDto(userStorage.update(user));
+        validateUser(user);
+        return userMapper.toUserDto(userRepository.saveAndFlush(user));
     }
 
-    public void delete(Long id) {
-        exists(id);
-        userStorage.delete(id);
+    public void deleteUser(Long id) {
+        getUser(id);
+        userRepository.deleteById(id);
     }
 
-    private void validate(User user) throws DuplicatedDataException {
-        if (userStorage.getAll()
+    private void validateUser(User user) throws DuplicatedDataException {
+        if (userRepository.findAllByEmail(user.getEmail())
                 .stream()
-                .anyMatch(u -> u.getEmail()
-                        .equals(user.getEmail()) && !Objects.equals(u.getId(), user.getId()))) {
+                .anyMatch(u ->
+                        !Objects.equals(u.getId(), user.getId()))) {
             throw new DuplicatedDataException("Этот email уже используется");
         }
     }
 
-    public void exists(Long userId) throws ConditionsNotMetException {
-        Optional.ofNullable(userStorage.read(userId))
+    public User getUser(Long userId) throws ConditionsNotMetException {
+        if (userId == null) {
+            throw new ConditionsNotMetException(ExceptionMessages.NOT_FOUND_ITEM);
+        }
+
+        return userRepository.findById(userId)
                 .orElseThrow(() -> new NotFoundException(String.format(ExceptionMessages.USER_NOT_FOUND_ERROR, userId)));
     }
 
