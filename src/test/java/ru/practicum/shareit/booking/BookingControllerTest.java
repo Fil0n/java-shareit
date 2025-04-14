@@ -97,7 +97,7 @@ class BookingControllerTest {
     private BookingDto getBookingDto(Long itemId, Long bookerId) {
         return BookingDto.builder()
                 .itemId(itemId)
-                .booker(UserMapper.toUserDto(userService.exists(bookerId)))
+                .booker(userService.getItemDto(bookerId))
                 .start(LocalDateTime.now().plusDays(1))
                 .end(LocalDateTime.now().plusDays(2))
                 .build();
