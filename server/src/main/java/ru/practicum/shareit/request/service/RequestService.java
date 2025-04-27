@@ -59,7 +59,7 @@ public class RequestService {
         return getRequestsWithItems(requests);
     }
 
-    private List<RequestDto> getRequestsWithItems(List<Request> requests){
+    private List<RequestDto> getRequestsWithItems(List<Request> requests) {
         List<Long> requestIds = requests.stream()
                 .map(Request::getId)
                 .toList();

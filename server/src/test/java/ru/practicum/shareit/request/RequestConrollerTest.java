@@ -11,7 +11,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
-import ru.practicum.shareit.extention.NotFoundException;
 import ru.practicum.shareit.item.model.ItemDto;
 import ru.practicum.shareit.request.controller.RequestController;
 import ru.practicum.shareit.request.model.RequestDto;
@@ -30,7 +29,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.hamcrest.Matchers.*;
 
 @ExtendWith(MockitoExtension.class)
-class ItemRequestControllerTest {
+class RequestConrollerTest {
     private MockMvc mockMvc;
     private final ObjectMapper mapper = new ObjectMapper()
             .registerModule(new JavaTimeModule());

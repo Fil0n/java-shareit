@@ -34,7 +34,7 @@ public class RequestController {
 
     @GetMapping("/{id}")
     public RequestDto findById(@PathVariable Long id,
-                                   @RequestHeader("X-Sharer-User-Id") Long userId) {
+                               @RequestHeader("X-Sharer-User-Id") Long userId) {
         return requestService.getRequestDto(id);
     }
 

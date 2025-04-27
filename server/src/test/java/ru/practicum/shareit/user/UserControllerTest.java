@@ -29,7 +29,6 @@ class UserControllerTest {
     void userControllerCreatesCorrectUser() {
         UserDto userDto = getUserDto(userCount);
         userDto = userController.create(userDto);
-        //assertNotNull(userDto.getId());
     }
 
     @Test
