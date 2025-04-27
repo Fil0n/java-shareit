@@ -13,7 +13,6 @@ import ru.practicum.shareit.booking.model.BookingDto;
 import ru.practicum.shareit.booking.model.BookingStatusType;
 import ru.practicum.shareit.comment.model.CommentDto;
 import ru.practicum.shareit.extention.ConditionsNotMetException;
-import ru.practicum.shareit.extention.WrongUserExeption;
 import ru.practicum.shareit.item.controller.ItemController;
 import ru.practicum.shareit.item.model.ItemDto;
 import ru.practicum.shareit.item.service.ItemService;
