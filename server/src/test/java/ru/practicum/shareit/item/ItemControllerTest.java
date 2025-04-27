@@ -13,8 +13,10 @@ import ru.practicum.shareit.booking.model.BookingDto;
 import ru.practicum.shareit.booking.model.BookingStatusType;
 import ru.practicum.shareit.comment.model.CommentDto;
 import ru.practicum.shareit.extention.ConditionsNotMetException;
+import ru.practicum.shareit.extention.WrongUserExeption;
 import ru.practicum.shareit.item.controller.ItemController;
 import ru.practicum.shareit.item.model.ItemDto;
+import ru.practicum.shareit.item.service.ItemService;
 import ru.practicum.shareit.user.controller.UserController;
 import ru.practicum.shareit.user.model.UserDto;
 import ru.practicum.shareit.user.service.UserService;
@@ -47,6 +49,21 @@ class ItemControllerTest {
     @Autowired
     private UserService userService;
 
+    @Autowired
+    private ItemService itemService;
+
+    @Test
+    void userIsOwner() {
+        assertThrows(ConditionsNotMetException.class,
+                () -> itemService.userIsOwner(1L, null));
+    }
+
+    @Test
+    void getItem() {
+        assertThrows(ConditionsNotMetException.class,
+                () -> itemService.getItem(null));
+    }
+
     @Test
     void itemControllerCreatesCorrectItem() {
         UserDto userDto = getUserDto(userCount);
@@ -55,7 +72,7 @@ class ItemControllerTest {
         ItemDto itemDto = getItemDto(itemCount);
         itemDto = itemController.create(itemDto, userDto.getId());
 
-        //assertNotNull(itemDto.getId());
+        assertNotNull(itemDto.getId());
     }
 
 

@@ -7,10 +7,12 @@ import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabas
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.DirtiesContext;
 import ru.practicum.shareit.ShareItApp;
+import ru.practicum.shareit.extention.ConditionsNotMetException;
 import ru.practicum.shareit.extention.DuplicatedDataException;
 import ru.practicum.shareit.extention.NotFoundException;
 import ru.practicum.shareit.user.controller.UserController;
 import ru.practicum.shareit.user.model.UserDto;
+import ru.practicum.shareit.user.service.UserService;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -24,6 +26,9 @@ class UserControllerTest {
     static int userCount = 0;
     @Autowired
     private UserController userController;
+
+    @Autowired
+    private UserService userService;
 
     @Test
     void userControllerCreatesCorrectUser() {
@@ -62,6 +67,26 @@ class UserControllerTest {
         userDto.setEmail("user" + 9999 + "@mail.ru");
         UserDto updatedUser = userController.update(userDto.getId(), userDto);
         assertEquals(userDto, updatedUser);
+    }
+
+    @Test
+    void  deleteUser() {
+        UserDto userDto = getUserDto(userCount);
+        userDto = userController.create(userDto);
+        userDto.setName("User" + 9999);
+        userDto.setEmail("user" + 9999 + "@mail.ru");
+
+        Long id = userDto.getId();
+        userService.deleteUser(userDto.getId());
+
+        assertThrows(NotFoundException.class,
+                () -> userService.getUser(id));
+    }
+
+    @Test
+    void getUser() {
+        assertThrows(ConditionsNotMetException.class,
+                () -> userService.getUser(null));
     }
 
     @Test

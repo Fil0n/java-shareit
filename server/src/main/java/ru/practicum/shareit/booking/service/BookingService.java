@@ -136,10 +136,6 @@ public class BookingService {
         sm.getExtendedState().getVariables().put("booking", booking);
         sm.sendEvent(bookingEvent);
 
-        if (sm.getState() == null) {
-            throw new IllegalStateException("StateMachine is not properly initialized or started.");
-        }
-
         booking.setStatus(sm.getState().getId());
         sm.stop();
     }

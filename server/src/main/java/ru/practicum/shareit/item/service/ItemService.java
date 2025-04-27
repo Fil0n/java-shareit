@@ -108,10 +108,6 @@ public class ItemService {
         Booking booking = bookingRepository.findByItemIdAndBookerIdAndEndBefore(itemId, userId, LocalDateTime.now())
                 .orElseThrow(() -> new ValidationException(ExceptionMessages.NOT_WAS_RENT));
 
-        if (!booking.getStatus().equals(BookingStatusType.APPROVED)) {
-            throw new ValidationException(ExceptionMessages.NOT_WAS_RENT);
-        }
-
         return commentService.createComment(item, commentDto, user);
     }
 }

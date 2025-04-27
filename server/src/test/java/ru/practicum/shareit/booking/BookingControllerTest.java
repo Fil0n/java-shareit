@@ -9,6 +9,7 @@ import org.springframework.test.annotation.DirtiesContext;
 import ru.practicum.shareit.ShareItApp;
 import ru.practicum.shareit.booking.controller.BookingController;
 import ru.practicum.shareit.booking.model.BookingDto;
+import ru.practicum.shareit.booking.model.BookingState;
 import ru.practicum.shareit.booking.model.BookingStatusType;
 import ru.practicum.shareit.item.controller.ItemController;
 import ru.practicum.shareit.item.model.ItemDto;
@@ -17,6 +18,7 @@ import ru.practicum.shareit.user.model.UserDto;
 import ru.practicum.shareit.user.service.UserService;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -53,6 +55,12 @@ class BookingControllerTest {
 
         BookingDto bookingDto = getBookingDto(itemDto.getId(), bookerDto.getId());
         BookingDto createdBooking = bookingController.create(bookingDto, bookerDto.getId());
+
+        BookingDto bookingDto1 = bookingController.findById(createdBooking.getId(), createdBooking.getBooker().getId());
+
+        List<BookingDto> bookings = bookingController.findAllByBookerAndState(BookingState.ALL, bookerDto.getId());
+
+        List<BookingDto> bookings1 = bookingController.findAllByOwnerAndState(BookingState.ALL, bookerDto.getId());
 
         assertNotNull(createdBooking.getId());
         assertEquals(bookingDto.getBooker().getId(), createdBooking.getBooker().getId());

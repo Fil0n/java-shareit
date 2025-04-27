@@ -13,6 +13,7 @@ import ru.practicum.shareit.booking.repository.BookingRepository;
 import ru.practicum.shareit.booking.service.BookingService;
 import ru.practicum.shareit.extention.ConditionsNotMetException;
 import ru.practicum.shareit.extention.ValidationException;
+import ru.practicum.shareit.extention.WrongUserExeption;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.item.service.ItemService;
 import ru.practicum.shareit.user.model.User;
@@ -111,6 +112,10 @@ class BookingServiceTest {
 
         assertThrows(ConditionsNotMetException.class,
                 () -> bookingService.getBookingDto(1L, 3L));
+
+        assertThrows(WrongUserExeption.class,
+                () -> bookingService.updateBookingStatus(1L, 3L, true));
+
     }
 
     @Test
@@ -164,10 +169,16 @@ class BookingServiceTest {
                 .thenReturn(List.of(booking));
 
         List<BookingDto> result = bookingService.readByBookerAndState(BookingState.ALL, 2L);
+        List<BookingDto> result1 = bookingService.readByBookerAndState(BookingState.WAITING, 2L);
+        List<BookingDto> result2 = bookingService.readByBookerAndState(BookingState.REJECTED, 2L);
+        List<BookingDto> result3 = bookingService.readByBookerAndState(BookingState.PAST, 2L);
+        List<BookingDto> result4 = bookingService.readByBookerAndState(BookingState.CURRENT, 2L);
+        List<BookingDto> result55 = bookingService.readByBookerAndState(BookingState.FUTURE, 2L);
 
         assertNotNull(result);
         assertEquals(1, result.size());
     }
+
 
     @Test
     void readByBookerAndState_whenCurrentState_thenReturnCurrentBookings() {
@@ -190,6 +201,11 @@ class BookingServiceTest {
                 .thenReturn(List.of(booking));
 
         List<BookingDto> result = bookingService.readByOwnerAndState(BookingState.ALL, 1L);
+        List<BookingDto> result1 = bookingService.readByOwnerAndState(BookingState.WAITING, 1L);
+        List<BookingDto> result2 = bookingService.readByOwnerAndState(BookingState.REJECTED, 1L);
+        List<BookingDto> result3 = bookingService.readByOwnerAndState(BookingState.PAST, 1L);
+        List<BookingDto> result4 = bookingService.readByOwnerAndState(BookingState.CURRENT, 1L);
+        List<BookingDto> result5 = bookingService.readByOwnerAndState(BookingState.FUTURE, 1L);
 
         assertNotNull(result);
         assertEquals(1, result.size());
